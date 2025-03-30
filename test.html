@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+    <title>StateBuilder Test</title>
+    </head>
+    <body>
+        <h1>StateBuilder Test</h1>
+
+        <div>
+            <pre>
+                <code id="output"></code>
+            </pre>
+        </div>
+
+        <p>
+            <input type="text" id="txt1" />
+            <button id="btnUpdate">Update</button>
+        </p>
+
+
+        <script src="state-builder.js"></script>
+        <script>
+            const fns = [
+                (state) => ({ ...state, a: state.a || "Hello" }),
+                (state) => ({ ...state, message: state.message || `${state.a}, World!` }),
+                (state) => ({ ...state, messageLength: state.message.length })
+            ]
+            const getState = stateBuilder(fns);
+
+            const btn = document.getElementById("btnUpdate");
+            const txt = document.getElementById("txt1");
+            btn.addEventListener("click", () => {
+                const state = getState({ a: txt.value });
+                const output = document.getElementById("output");
+                output.innerText = JSON.stringify(state, null, 2);
+            })
+        </script>
+    </body>
+</html>
