@@ -22,18 +22,31 @@
         <script src="state-builder.js"></script>
         <script>
             const fns = [
-                (state) => ({ ...state, a: state.a || "Hello" }),
-                (state) => ({ ...state, message: state.message || `${state.a}, World!` }),
-                (state) => ({ ...state, messageLength: state.message.length })
-            ]
+                {
+                    name: "a",
+                    deps: [],
+                    fn: (state) => "Hello",
+                },
+                {
+                    name: "message",
+                    deps: ["a"],
+                    fn: (state) => `${state.a}, World!`,
+                },
+                {
+                    name: "messageLength",
+                    deps: ["message"],
+                    fn: (state) => state.message?.length,
+                },
+            ];
             const getState = stateBuilder(fns);
 
             const btn = document.getElementById("btnUpdate");
             const txt = document.getElementById("txt1");
             btn.addEventListener("click", () => {
-                const state = getState({ a: txt.value });
+                const state = getState({ a: txt.value || undefined });
+                console.log({state})
                 const output = document.getElementById("output");
-                output.innerText = JSON.stringify(state, null, 2);
+                output.innerText = JSON.stringify(state.newValues, null, 2);
             })
         </script>
     </body>
