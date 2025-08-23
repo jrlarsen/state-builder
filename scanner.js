@@ -1,16 +1,13 @@
 const getToken = (text, matchers) => {
    const patterns = Object.entries(matchers);
-   let token = { type: "unknown", text };
 
-   patterns.forEach(([type, pattern]) => {
-      if (token.type !== "unknown") return;
+   while (patterns.length > 0) {
+      const [type, pattern] = patterns.shift();
       const match = text.match(pattern);
-      if (match?.length) {
-         token = { type, text: match[0] };
-      }
-   });
+      if (match?.length) return { type, text: match[0] };
+   }
 
-   return token;
+   return { type: 'unknown' };
 };
 
 const scan = (text = "", patterns = {}, ignoredTypes = []) => {
