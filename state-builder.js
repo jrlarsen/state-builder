@@ -1,6 +1,4 @@
-export default function stateBuilder(fnList) {
-    let oldValues = {};
-
+export default function stateBuilder(fnList, oldValues = {}) {
     return function(updates = {}) {
         const changed = Object.fromEntries(
             Object.entries(updates)

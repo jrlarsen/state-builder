@@ -30,8 +30,12 @@ for (const def of valueDefs) {
    env.define(def.key, def.value);
 }
 
-env.evaluate({});
+env.evaluate();
 
 env.update("b", "b + 1");
 
 env.update("a", "a * 2");
+
+env.define("d.val", "10 * a + b - c");
+
+env.update("a", "44");

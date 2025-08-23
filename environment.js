@@ -17,6 +17,7 @@ export default class Environment {
 
    evaluate(patch = {}) {
       this.state = this.updateState(patch).newValues;
+      console.log(this.state);
    }
 
    define(key, expr) {
@@ -31,17 +32,20 @@ export default class Environment {
          fn,
       });
 
-      this.updateState = this.stateBuilder(this.fns);
+      this.updateState = this.stateBuilder(this.fns, this.state);
+      this.evaluate();
    }
 
    update(key, expr) {
-      const tokens = this.scanner.scan(expr);
-      const exprTree = this.parser.parse(tokens);
-      const fn = this.fnBuilder.getFn(exprTree);
-      const value = fn(this.state);
-
-      console.log(`${key} set to ${value}`);
-
-      this.evaluate({ [key]: value });
+      let patch = {};
+      if (key && expr) {
+         const tokens = this.scanner.scan(expr);
+         const exprTree = this.parser.parse(tokens);
+         const fn = this.fnBuilder.getFn(exprTree);
+         const value = fn(this.state);
+         patch = { [key]: value };
+         console.log(`${key} set to ${value}`);
+      }
+      this.evaluate(patch);
    }
 }
