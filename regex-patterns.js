@@ -11,6 +11,12 @@ const patterns = {
    "right-parens": /^\)/,
    "comma": /^,/,
    "caret": /^\^/,
+   "equal-equal": /^==/,
+   "bang-equal": /^!=/,
+   "less-equal": /^<=/,
+   "less": /^</,
+   "greater-equal": /^>=/,
+   "greater": /^>/,
 };
 
 export default patterns;

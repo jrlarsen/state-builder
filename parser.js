@@ -9,7 +9,37 @@ export default class Parser {
    }
 
    expression() {
-      return this.term();
+      return this.equality();
+   }
+
+   equality() {
+      let expr = this.comparison();
+
+      while (this.match(["bang-equal", "equal-equal"])) {
+         expr = {
+            type: "binary",
+            left: expr,
+            operator: this.previous(),
+            right: this.comparison(),
+         }
+      }
+
+      return expr;
+   }
+
+   comparison() {
+      let expr = this.term();
+
+      while (this.match(["greater", "greater-equal", "less", "less-equal"])) {
+         expr = {
+            type: "binary",
+            left: expr,
+            operator: this.previous(),
+            right: this.term(),
+         }
+      }
+
+      return expr;
    }
 
    term() {
