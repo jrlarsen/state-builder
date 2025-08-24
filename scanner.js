@@ -7,12 +7,14 @@ const getToken = (text, matchers) => {
       if (match?.length) return { type, text: match[0] };
    }
 
-   return { type: 'unknown' };
+   return { type: 'unknown', text };
 };
 
 const scan = (text = "", patterns = {}, ignoredTypes = []) => {
    const tokens = [];
    let currentText = text;
+
+   console.log(currentText)
 
    while (currentText.length) {
       const token = getToken(currentText, patterns);

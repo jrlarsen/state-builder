@@ -8,6 +8,7 @@ const patterns = {
    "number": /^[1-9][0-9]*(.[0-9]+)?/,
    "left-parens": /^\(/,
    "right-parens": /^\)/,
+   "comma": /^,/,
 };
 
 export default patterns;

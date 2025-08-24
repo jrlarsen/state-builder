@@ -17,7 +17,13 @@ export default class Environment {
 
    #getFunction(expr) {
       const tokens = this.#scanner.scan(expr);
+
+      // console.log(tokens);
+
       const exprTree = this.#parser.parse(tokens);
+
+      // console.log(exprTree);
+
       const deps = tokens.filter(t => t.type === "identifier").map(t => t.text);
       return { deps, fn: this.#fnBuilder.getFn(exprTree) };
    }

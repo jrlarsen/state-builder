@@ -51,7 +51,31 @@ export default class Parser {
          };
       }
 
-      return this.primary();
+      return this.fnCall();
+   }
+
+   fnCall() {
+      let expr = this.primary();
+
+      if (this.match(["left-parens"])) {
+         const args = [];
+
+         if (!this.check("right-parens")) {
+            do {
+               args.push(this.expression());
+            } while (this.match(["comma"]));
+         }
+
+         const paren = this.consume("right-parens", "Expect ')' after arguments.");
+
+         expr = {
+            type: "fnCall",
+            args,
+            fn: expr.key,
+            paren,
+         };
+      }
+      return expr;
    }
 
    primary() {

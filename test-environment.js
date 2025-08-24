@@ -6,18 +6,9 @@ import stateBuilder from "./state-builder.js";
 import getFn from "./fn-builder.js";
 
 const valueDefs = [
-   {
-      key: "a",
-      value: "5",
-   },
-   {
-      key: "b",
-      value: "12",
-   },
-   {
-      key: "c",
-      value: "(10 + 2) * (a + b)",
-   }
+   { key: "a", value: "int (1, 10)" },
+   { key: "b", value: "pow(a, 2)" },
+   { key: "c", value: "p(b, 3)" },
 ];
 
 const scanner = { scan: getScanner(regexPatterns, ["whitespace"]) };
@@ -30,7 +21,3 @@ for (const def of valueDefs) {
    env.defineValue(def.key, def.value);
 }
 
-env.defineCommand("increment a", "a", "a + 1");
-env.doCommand("increment a");
-env.doCommand("increment a");
-env.doCommand("increment a");
