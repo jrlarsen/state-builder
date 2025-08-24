@@ -73,7 +73,7 @@ export default class Parser {
    }
 
    unary() {
-      if (this.match(["minus"])) {
+      if (this.match(["minus", "bang"])) {
          return {
             type: "unary",
             operator: this.previous(),

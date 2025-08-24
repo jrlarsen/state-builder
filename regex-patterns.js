@@ -17,6 +17,7 @@ const patterns = {
    "less": /^</,
    "greater-equal": /^>=/,
    "greater": /^>/,
+   "bang": /^!/,
 };
 
 export default patterns;

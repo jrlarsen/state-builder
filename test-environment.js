@@ -12,6 +12,7 @@ const valueDefs = [
    { key: "d", value: "1 >= 2" },
    { key: "e", value: "1 < 2" },
    { key: "f", value: "1 > 2" },
+   { key: "g", value: "!f" },
 ];
 
 const scanner = { scan: getScanner(regexPatterns, ["whitespace"]) };
