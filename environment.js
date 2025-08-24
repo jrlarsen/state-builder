@@ -6,6 +6,7 @@ export default class Environment {
    state = {};
    fns = [];
    updateState = null;
+   commands = {};
 
    constructor(scanner, parser, stateBuilder, fnBuilder) {
       this.scanner = scanner;
@@ -20,7 +21,7 @@ export default class Environment {
       console.log(this.state);
    }
 
-   define(key, expr) {
+   defineValue(key, expr) {
       const tokens = this.scanner.scan(expr);
       const exprTree = this.parser.parse(tokens);
       const deps = tokens.filter(t => t.type === "identifier").map(t => t.text);
@@ -36,6 +37,24 @@ export default class Environment {
       this.evaluate();
    }
 
+   defineCommand(command, key, expr) {
+      const tokens = this.scanner.scan(expr);
+      const exprTree = this.parser.parse(tokens);
+      this.commands[command] = {
+         key,
+         fn: this.fnBuilder.getFn(exprTree),
+      };
+   }
+
+   doCommand(command) {
+      const cmd = this.commands[command];
+      if (cmd) {
+         console.log(`Command: ${command}`);
+         const value = cmd.fn(this.state);
+         this.evaluate({ [cmd.key]: value });
+      }
+   }
+
    update(key, expr) {
       let patch = {};
       if (key && expr) {
@@ -47,5 +66,10 @@ export default class Environment {
          console.log(`${key} set to ${value}`);
       }
       this.evaluate(patch);
+   }
+
+   reset() {
+      this.updateState = this.stateBuilder(this.fns, {});
+      this.evaluate();
    }
 }

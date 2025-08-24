@@ -27,15 +27,10 @@ const fnBuilder = { getFn };
 const env = new Environment(scanner, parser, stateBuilder, fnBuilder);
 
 for (const def of valueDefs) {
-   env.define(def.key, def.value);
+   env.defineValue(def.key, def.value);
 }
 
-env.evaluate();
-
-env.update("b", "b + 1");
-
-env.update("a", "a * 2");
-
-env.define("d.val", "10 * a + b - c");
-
-env.update("a", "44");
+env.defineCommand("increment a", "a", "a + 1");
+env.doCommand("increment a");
+env.doCommand("increment a");
+env.doCommand("increment a");

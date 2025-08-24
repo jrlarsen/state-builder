@@ -1,9 +1,13 @@
-export default function stateBuilder(fnList, oldValues = {}) {
-    return function(updates = {}) {
+export default function stateBuilder(fnList, initialValues = {}) {
+   let oldValues = { ...initialValues };
+
+   return function(updates = {}) {
         const changed = Object.fromEntries(
             Object.entries(updates)
                .filter(([key, value]) => value !== undefined && oldValues[key] !== value)
         );
+
+        console.log({ changed });
 
         const updatedKeys = new Set(Object.keys(changed));
         const newValues = { ...oldValues, ...changed };
@@ -23,9 +27,6 @@ export default function stateBuilder(fnList, oldValues = {}) {
         });
 
         oldValues = newValues;
-        return {
-            newValues,
-            updatedKeys,
-        };
+        return { newValues, updatedKeys };
     }
 }
