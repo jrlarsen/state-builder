@@ -19,16 +19,15 @@ export default class Environment {
       const tokens = this.#scanner.scan(expr);
       const exprTree = this.#parser.parse(tokens);
       const deps = tokens.filter(t => t.type === "identifier").map(t => t.text);
-      const fn = this.#fnBuilder.getFn(exprTree);
-      return { deps, fn: () => fn(this.#state) };
+      return { deps, fn: this.#fnBuilder.getFn(exprTree) };
    }
 
-   #updateBuilder(shouldReset) {
-      this.#updateState = this.#stateBuilder(this.#fns, shouldReset ? {} : this.#state);
+   #updateBuilder() {
+      this.#updateState = this.#stateBuilder(this.#fns);
    }
 
    evaluate(patch = {}) {
-      this.#state = this.#updateState(patch).newValues;
+      this.#state = this.#updateState(patch, this.#state).newValues;
       console.log(this.#state);
    }
 
@@ -45,11 +44,11 @@ export default class Environment {
 
    doCommand(command) {
       const cmd = this.#commands[command];
-      if (cmd) this.evaluate({ [cmd.key]: cmd.fn() });
+      if (cmd) this.evaluate({ [cmd.key]: cmd.fn(this.#state) });
    }
 
    update(key, expr) {
-      this.evaluate({ [key]: this.#getFunction(expr).fn() });
+      this.evaluate({ [key]: this.#getFunction(expr).fn(this.#state) });
    }
 
    reset() {

@@ -6,6 +6,8 @@ const patterns = {
    "identifier": /^[a-zA-Z]+/,
    "whitespace": /^\s+/,
    "number": /^[1-9][0-9]*(.[0-9]+)?/,
+   "left-parens": /^\(/,
+   "right-parens": /^\)/,
 };
 
 export default patterns;

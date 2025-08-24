@@ -11,6 +11,8 @@ const ops = {
 
 export default function getFn(expr) {
    switch (expr.type) {
+      case "expression":
+         return getFn(expr.expr);
       case "binary":
          const left = getFn(expr.left);
          const right = getFn(expr.right);

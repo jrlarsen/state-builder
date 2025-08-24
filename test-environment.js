@@ -16,7 +16,7 @@ const valueDefs = [
    },
    {
       key: "c",
-      value: "a + b",
+      value: "(10 + 2) * (a + b)",
    }
 ];
 

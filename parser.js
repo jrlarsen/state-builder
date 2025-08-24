@@ -68,6 +68,15 @@ export default class Parser {
             key: this.previous().text,
          };
       }
+
+      if (this.match(["left-parens"])) {
+         const expr = this.expression();
+         this.consume("right-parens", "Expect ')' after expression.");
+         return {
+            type: 'expression',
+            expr,
+         }
+      }
    }
 
    match(types) {
