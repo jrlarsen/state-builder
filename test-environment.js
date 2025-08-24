@@ -6,7 +6,14 @@ import stateBuilder from "./state-builder.js";
 import getFn from "./fn-builder.js";
 
 const valueDefs = [
-   { key: "c", value: "-int(1,10)**2" },
+   // { key: "frac.numerator", value: "int(1,10)" },
+   // { key: "frac.denominator", value: "int(1,10)" },
+   // { key: "a.b", value: "5" },
+   // { key: "a.c.a", value: "10" },
+   // { key: "a.c.e", value: "20" },
+   // { key: "a.b", value: "30" },
+   { key: "a", value: "5" },
+   { key: "b", value: "a + 1" },
 ];
 
 const scanner = { scan: getScanner(regexPatterns, ["whitespace"]) };

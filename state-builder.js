@@ -12,7 +12,7 @@ export default function stateBuilder(fnList) {
             if (!updatedKeys.has(name)) {
                 const depsSet = new Set(deps);
                 if (depsSet.intersection(updatedKeys).size > 0 || newValues[name] === undefined) {
-                    const value = fn({ ...newValues, msg: "Hello " });
+                    const value = fn(newValues);
                     if (value !== newValues[name]) {
                         newValues[name] = value;
                         updatedKeys.add(name);

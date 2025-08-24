@@ -4,7 +4,7 @@ const patterns = {
    "slash": /^[/]/,
    "star-star": /^\*\*/,
    "star": /^[*]/,
-   "identifier": /^[a-zA-Z]+/,
+   "identifier": /^[a-zA-Z]+(\.[a-zA-Z]+)*/,
    "whitespace": /^\s+/,
    "number": /^[1-9][0-9]*(\.[0-9]+)?/,
    "left-parens": /^\(/,
