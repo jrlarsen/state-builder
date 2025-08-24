@@ -6,9 +6,7 @@ import stateBuilder from "./state-builder.js";
 import getFn from "./fn-builder.js";
 
 const valueDefs = [
-   { key: "a", value: "int (1, 10)" },
-   { key: "b", value: "pow(a, 2)" },
-   { key: "c", value: "p(b, 3)" },
+   { key: "c", value: "-int(1,10)**2" },
 ];
 
 const scanner = { scan: getScanner(regexPatterns, ["whitespace"]) };

@@ -51,7 +51,22 @@ export default class Parser {
          };
       }
 
-      return this.fnCall();
+      return this.exponential();
+   }
+
+   exponential() {
+      let expr = this.fnCall();
+
+      while (this.match(["star-star", "caret"])) {
+         expr = {
+            type: "binary",
+            left: expr,
+            operator: this.previous(),
+            right: this.exponential(),
+         };
+      }
+
+      return expr;
    }
 
    fnCall() {
