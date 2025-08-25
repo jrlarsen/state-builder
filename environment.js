@@ -1,3 +1,5 @@
+import {setObjectValue} from "./utils/objects/paths.js";
+
 export default class Environment {
    #scanner = null;
    #parser = null;
@@ -26,7 +28,7 @@ export default class Environment {
       // console.log(exprTree);
 
       const deps = tokens.filter(t => t.type === "identifier").map(t => t.text);
-      return { deps, fn: this.#fnBuilder.getFn(exprTree) };
+      return { deps, fn: this.#fnBuilder.getFn(exprTree).fn };
    }
 
    #updateBuilder() {
@@ -34,28 +36,20 @@ export default class Environment {
    }
 
    #buildObjects() {
-      this.#objectState = Object.entries(this.#state).reduce((state, [keyPath, value]) => {
-         const keys = keyPath.split(".");
-         let ref = state;
-         while (keys.length) {
-            let key = keys.shift();
-            ref[key] ??= {};
-            if (!keys.length) ref[key] = value;
-            ref = ref[key];
-         }
-         return state;
-      }, {});
+      this.#objectState = Object.entries(this.#state)
+         .reduce((state, [keyPath, value]) => setObjectValue(state, keyPath, value), {});
    }
 
    evaluate(patch = {}) {
       this.#state = this.#updateState(patch, this.#state).newValues;
       this.#buildObjects();
       console.table(this.#objectState);
+      // console.log(this.#objectState);
    }
 
    defineValue(key, expr) {
       const { deps, fn } = this.#getFunction(expr);
-      this.#fns.push({ key, deps, fn });
+      this.#fns.push({ deps, fn, key });
       this.#updateBuilder();
       this.evaluate();
    }

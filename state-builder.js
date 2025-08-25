@@ -1,3 +1,5 @@
+import {hasChangedProperties, hasChangedProperty} from "./utils/objects/paths.js";
+
 export default function stateBuilder(fnList) {
    return function(updates = {}, oldValues = {}) {
         const changed = Object.fromEntries(
@@ -10,10 +12,9 @@ export default function stateBuilder(fnList) {
 
         fnList.forEach(({key: name, deps, fn}) => {
             if (!updatedKeys.has(name)) {
-                const depsSet = new Set(deps);
-                if (depsSet.intersection(updatedKeys).size > 0 || newValues[name] === undefined) {
+                if (hasChangedProperties(oldValues, deps, newValues) || newValues[name] === undefined) {
                     const value = fn(newValues);
-                    if (value !== newValues[name]) {
+                    if (hasChangedProperty(newValues, name, value)) {
                         newValues[name] = value;
                         updatedKeys.add(name);
                         console.log(`${name} -> ${value}`);

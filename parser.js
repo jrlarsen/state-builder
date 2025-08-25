@@ -29,6 +29,30 @@ export default class Parser {
             paren,
          };
       }
+      return this.objectLiteral();
+   }
+
+   objectLiteral() {
+      if (this.match(["left-brace"])) {
+         const pairs = [];
+         if (!this.check("right-brace")) {
+            do {
+               if (this.match(["identifier"])) {
+                  const key = this.previous().text;
+                  const colon = this.consume("colon", "Expect ':' between key and value.");
+                  pairs.push([key, this.expression(), colon]);
+               }
+            } while (this.match(["comma"]));
+         }
+
+         const paren = this.consume("right-brace", "Expect '}' after pairs.");
+
+         return {
+            type: "object",
+            pairs,
+            paren,
+         };
+      }
       return this.or();
    }
 
