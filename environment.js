@@ -10,6 +10,7 @@ export default class Environment {
    #fns = [];
    #updateState = null;
    #commands = {};
+   #definedFunctions = {};
 
    constructor(scanner, parser, stateBuilder, fnBuilder) {
       this.#scanner = scanner;
@@ -21,14 +22,14 @@ export default class Environment {
    #getFunction(expr) {
       const tokens = this.#scanner.scan(expr);
 
-      console.log(tokens);
+      // console.log(tokens);
 
       const exprTree = this.#parser.parse(tokens);
 
-      console.log(exprTree);
+      // console.log(exprTree);
 
       const deps = tokens.filter(t => t.type === "identifier").map(t => t.text);
-      return { deps, fn: this.#fnBuilder.getFn(exprTree).fn };
+      return { deps, fn: this.#fnBuilder.getFn(exprTree, this.#definedFunctions).fn };
    }
 
    #updateBuilder() {
@@ -61,6 +62,20 @@ export default class Environment {
    doCommand(command) {
       const cmd = this.#commands[command];
       if (cmd) this.evaluate({ [cmd.key]: cmd.fn(this.#state) });
+   }
+
+   defineFunction(key, params, exprList, returnValue, whileCondition) {
+      const fns = exprList.map(expr => [ expr.key, this.#getFunction(expr.fn).fn ]);
+      const condition = this.#getFunction(whileCondition).fn;
+      const returnFn = this.#getFunction(returnValue).fn;
+
+      this.#definedFunctions[key] = (...args) => {
+         let state = Object.fromEntries(args.map((arg, i) => [params[i], arg]));
+         while (condition(state)) {
+            state = fns.reduce((newState, [stateKey, fn]) => ({ ...newState, [stateKey]: fn(newState)}), state);
+         }
+         return returnFn(state);
+      }
    }
 
    update(key, expr) {

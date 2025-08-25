@@ -6,10 +6,10 @@ import stateBuilder from "./state-builder.js";
 import getFn from "./fn-builder.js";
 
 const valueDefs = [
-   { key: "a", value: "5" },
-   { key: "b", value: "a + 3" },
-   { key: "c", value: "10" },
-   { key: "d", value: "b + 4" },
+   { key: "a", value: "int(1, 10) * 4" },
+   { key: "b", value: "int(1, 10) * 6" },
+   { key: "c", value: "int(1, 100) * 5" },
+   { key: "d", value: "int(1, 100) * 3" },
 ];
 
 const scanner = { scan: getScanner(regexPatterns, ["whitespace"]) };
@@ -22,5 +22,20 @@ for (const def of valueDefs) {
    env.defineValue(def.key, def.value);
 }
 
-env.update("a", "10");
-env.update("a", "10");
+env.defineFunction(
+   "hcf",
+   ["a", "b"],
+   [
+      { key: "c", fn: "max(a, b) - min(a, b)" },
+      { key: "d", fn: "min(a, b)" },
+      { key: "a", fn: "c" },
+      { key: "b", fn: "d" }
+   ],
+   "min(a, b)",
+   "a != b && a != 1"
+);
+
+env.defineValue("hcf1", "hcf(a, b)");
+env.defineValue("hcf2", "hcf(c, d)");
+
+console.table(env.getState());

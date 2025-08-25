@@ -32,7 +32,7 @@ const fns = {
    },
 };
 
-export default function getFn(expr) {
+export default function getFn(expr, fnBank = {}) {
    switch (expr.type) {
 
       case "object":
@@ -50,7 +50,7 @@ export default function getFn(expr) {
       case "fnCall":
       {
          const fnName = expr.fn;
-         const fn = Math[fnName] ?? fns[fnName];
+         const fn = Math[fnName] ?? fnBank[fnName] ?? fns[fnName];
          if (!fn) return () => null;
          const argFns = expr.args.map((arg) => getFn(arg).fn);
          return { fn: (state) => {
