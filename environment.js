@@ -20,7 +20,13 @@ export default class Environment {
 
    #getFunction(expr) {
       const tokens = this.#scanner.scan(expr);
+
+      console.log(tokens);
+
       const exprTree = this.#parser.parse(tokens);
+
+      console.log(exprTree);
+
       const deps = tokens.filter(t => t.type === "identifier").map(t => t.text);
       return { deps, fn: this.#fnBuilder.getFn(exprTree).fn };
    }
@@ -72,5 +78,13 @@ export default class Environment {
    reset() {
       this.#updateBuilder(true);
       this.evaluate({}, true);
+   }
+
+   clear() {
+      this.#state = {};
+      this.#objectState = {};
+      this.#fns = [];
+      this.#updateState = null;
+      this.#commands = {};
    }
 }

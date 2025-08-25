@@ -1,0 +1,5 @@
+AB = int(1, 10)
+AC = int(1, 10)
+BC = sqrt(AB**2 + AC**2)
+frac = { num: int(1, 100), den: int(101, 1000) }
+decimal = frac.num / frac.den

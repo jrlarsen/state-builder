@@ -1,7 +1,7 @@
 const patterns = {
    "minus": /^[-]/,
    "plus": /^[+]/,
-   "slash": /^[/]/,
+   "slash": /^\//,
    "star-star": /^\*\*/,
    "star": /^[*]/,
    "identifier": /^[a-zA-Z]+[0-9]*(\.[a-zA-Z]+[0-9]*)*/,

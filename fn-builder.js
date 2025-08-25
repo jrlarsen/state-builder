@@ -1,3 +1,5 @@
+import {getObjectValue} from "./utils/objects/paths.js";
+
 const ops = {
    "binary": {
       "+": (a, b) => a + b,
@@ -76,7 +78,7 @@ export default function getFn(expr) {
       }
 
       case "variable":
-         return { fn: (state) => state[expr.key] };
+         return { fn: (state) => state[expr.key] ?? getObjectValue(state, expr.key) };
 
       default:
          return { fn: () => parseFloat(expr.value) };

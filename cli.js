@@ -1,5 +1,6 @@
 import * as readline from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'node:process';
+import { open } from 'node:fs/promises';
 import getScanner from "./scanner.js";
 import regexPatterns from "./regex-patterns.js";
 import Parser from "./parser.js";
@@ -13,6 +14,20 @@ const commands = {
       env.reset();
       console.table(env.getState());
    },
+   "clear": () => env.clear(),
+   "load": async (filePath) => {
+      env.clear();
+      const file = await open(filePath);
+
+      for await (const line of file.readLines()) {
+         const bits = line.split('=').map(i => i.trim());
+         if (bits.length === 2) {
+            env.defineValue(bits[0], bits[1]);
+         }
+      }
+      console.log();
+      console.table(env.getState());
+   }
 };
 
 function doCommand(command, argText) {
