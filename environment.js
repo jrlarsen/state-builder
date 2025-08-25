@@ -50,7 +50,7 @@ export default class Environment {
    evaluate(patch = {}) {
       this.#state = this.#updateState(patch, this.#state).newValues;
       this.#buildObjects();
-      console.log(this.#objectState);
+      console.table(this.#objectState);
    }
 
    defineValue(key, expr) {

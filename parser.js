@@ -9,6 +9,26 @@ export default class Parser {
    }
 
    expression() {
+      return this.list();
+   }
+
+   list() {
+      if (this.match(["left-bracket"])) {
+         const terms = [];
+         if (!this.check("right-bracket")) {
+            do {
+               terms.push(this.expression());
+            } while (this.match(["comma"]));
+         }
+
+         const paren = this.consume("right-bracket", "Expect ']' after terms.");
+
+         return {
+            type: "list",
+            terms,
+            paren,
+         };
+      }
       return this.equality();
    }
 

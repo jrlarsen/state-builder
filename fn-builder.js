@@ -31,6 +31,12 @@ const fns = {
 export default function getFn(expr) {
    switch (expr.type) {
 
+      case "list":
+      {
+         const termFns = expr.terms.map((term) => getFn(term));
+         return (state) => termFns.map(fn => fn(state));
+      }
+
       case "fnCall":
       {
          const fnName = expr.fn;
