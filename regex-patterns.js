@@ -22,6 +22,8 @@ const patterns = {
    "greater-equal": /^>=/,
    "greater": /^>/,
    "bang": /^!/,
+   "amp-amp": /^&&/,
+   "pipe-pipe": /^\|\|/,
 };
 
 export default patterns;

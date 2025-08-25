@@ -29,7 +29,38 @@ export default class Parser {
             paren,
          };
       }
-      return this.equality();
+      return this.or();
+   }
+
+   or() {
+      let expr = this.and();
+
+      while (this.match(["pipe-pipe"])) {
+         expr = {
+            type: "binary",
+            left: expr,
+            operator: this.previous(),
+            right: this.and(),
+         }
+      }
+
+      return expr;
+   }
+
+   and() {
+      let expr = this.equality();
+
+      while (this.match(["amp-amp"])) {
+         expr = {
+            type: "binary",
+            left: expr,
+            operator: this.previous(),
+            right: this.equality(),
+         }
+      }
+
+      return expr;
+
    }
 
    equality() {
