@@ -20,13 +20,7 @@ export default class Environment {
 
    #getFunction(expr) {
       const tokens = this.#scanner.scan(expr);
-
-      // console.log(tokens);
-
       const exprTree = this.#parser.parse(tokens);
-
-      // console.log(exprTree);
-
       const deps = tokens.filter(t => t.type === "identifier").map(t => t.text);
       return { deps, fn: this.#fnBuilder.getFn(exprTree).fn };
    }
@@ -40,10 +34,10 @@ export default class Environment {
          .reduce((state, [keyPath, value]) => setObjectValue(state, keyPath, value), {});
    }
 
-   evaluate(patch = {}) {
-      this.#state = this.#updateState(patch, this.#state).newValues;
+   evaluate(patch = {}, reset) {
+      this.#state = this.#updateState(patch, reset ? {} : this.#state).newValues;
       this.#buildObjects();
-      console.table(this.#objectState);
+      // console.table(this.#objectState);
       // console.log(this.#objectState);
    }
 
@@ -64,11 +58,19 @@ export default class Environment {
    }
 
    update(key, expr) {
-      this.evaluate({ [key]: this.#getFunction(expr).fn(this.#state) });
+      this.evaluate({ [key]: this.getExpressionValue(expr) });
+   }
+
+   getExpressionValue(expr) {
+      return this.#getFunction(expr).fn(this.#state);
+   }
+
+   getState() {
+      return this.#objectState;
    }
 
    reset() {
       this.#updateBuilder(true);
-      this.evaluate();
+      this.evaluate({}, true);
    }
 }

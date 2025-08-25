@@ -17,7 +17,7 @@ export default function stateBuilder(fnList) {
                     if (hasChangedProperty(newValues, name, value)) {
                         newValues[name] = value;
                         updatedKeys.add(name);
-                        console.log(`${name} -> ${value}`);
+                        // console.log(`${name} -> ${value}`);
                     }
                 }
             }

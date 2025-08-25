@@ -14,8 +14,6 @@ const scan = (text = "", patterns = {}, ignoredTypes = []) => {
    const tokens = [];
    let currentText = text;
 
-   console.log(currentText)
-
    while (currentText.length) {
       const token = getToken(currentText, patterns);
       if (!ignoredTypes.includes(token.type)) tokens.push(token);
