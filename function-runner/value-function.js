@@ -10,8 +10,8 @@ function getPropFromState(path, state) {
 
 function getPropsFromState(keys, state) {
    return keys.reduce((soFar, key) => {
-      const value = getPropFromState(key.key, state).value;
-      return setObjectValue(soFar, key.key, value);
+      const value = getPropFromState(key, state).value;
+      return setObjectValue(soFar, key, value);
    }, {});
 }
 

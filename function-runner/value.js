@@ -1,3 +1,3 @@
-export default function getValue(key, type, value) {
-   return { key, type, value };
+export default function getValue(key, status, value) {
+   return { key, status, value };
 }

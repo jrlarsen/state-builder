@@ -1,11 +1,11 @@
 import {getObjectValue} from "../utils/objects/paths.js";
 import getValue from "./value.js";
 
-function checkDeps(valueFn, state) {
-   return valueFn.deps.reduce((result, dep) => {
-      const v = getObjectValue(state, dep.key);
-      if (v === undefined) result.missing.push(dep.key);
-      else if (v.type === "error") result.errors.push(dep.key);
+function checkDeps(deps, state) {
+   return deps.reduce((result, dep) => {
+      const v = getObjectValue(state, dep);
+      if (v === undefined) result.missing.push(dep);
+      else if (v.status === "error") result.errors.push(dep);
       return result;
    }, { missing: [], errors: [] });
 }
@@ -18,57 +18,36 @@ export default function functionRunner() {
    }
 
    function run(initialState = {}) {
-      let initialResult = runFns({ ...initialState });
+      let initialResult = runFns(fns, { ...initialState });
       if (initialResult.deferredFns.length === 0) return initialResult.state;
       let oldResult = initialResult;
       let result = initialResult;
 
       do {
          oldResult = result;
-         result = runDeferredFns(result.deferredFns, result.state);
+         result = runFns(result.deferredFns, result.state);
       } while (result.deferredFns.length !== oldResult.deferredFns.length);
 
       return result.state;
    }
 
-   function runFns(initialState = {}) {
+   function runFns(fns, initialState = {}) {
       let state = initialState;
       const deferredFns = [];
 
       for (const valueFn of fns) {
-         const { missing, errors } = checkDeps(valueFn, state);
+         const { key, deps, run } = valueFn;
+         const { missing, errors } = checkDeps(deps, state);
          if (errors.length) {
-            state[valueFn.key] = getValue(valueFn.key, "error", "This value depends on at least one value with errors.");
+            state[key] = getValue(key, "error", "This value depends on at least one value with errors.");
          } else if (missing.length) {
+            state[key] = getValue(key, "error", "Missing dependency");
             deferredFns.push(valueFn);
          } else {
             try {
-               state = { ...state, [valueFn.key]: getValue(valueFn.key, "ok", valueFn.run(state)) };
+               state = { ...state, [key]: getValue(key, "ok", run(state)) };
             } catch (error) {
-               state[valueFn.key] = getValue(valueFn.key, "error", "The was a problem calculating this value.");
-            }
-         }
-      }
-
-      return { state, deferredFns };
-   }
-
-   function runDeferredFns(dFns, initialState = {}) {
-      let state = initialState;
-      const deferredFns = [];
-
-      for (const valueFn of dFns) {
-         const { missing, errors } = checkDeps(valueFn, state);
-         if (errors.length) {
-            state[valueFn.key] = getValue(valueFn.key, "error", "This value depends on at least one value with errors.");
-         } else if (missing.length) {
-            state[valueFn.key] = getValue(valueFn.key, "error", "Missing dependency");
-            deferredFns.push(valueFn);
-         } else {
-            try {
-               state = { ...state, [valueFn.key]: getValue(valueFn.key, "ok", valueFn.run(state)) };
-            } catch (error) {
-               state[valueFn.key] = getValue(valueFn.key, "error", "The was a problem calculating this value.");
+               state[key] = getValue(key, "error", "There was a problem calculating this value.");
             }
          }
       }
