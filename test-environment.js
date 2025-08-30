@@ -27,9 +27,8 @@ env.defineFunction(
    ["a", "b"],
    [
       { key: "c", fn: "max(a, b) - min(a, b)" },
-      { key: "d", fn: "min(a, b)" },
+      { key: "b", fn: "min(a, b)" },
       { key: "a", fn: "c" },
-      { key: "b", fn: "d" }
    ],
    "min(a, b)",
    "a != b && a != 1"
