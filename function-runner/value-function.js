@@ -1,4 +1,5 @@
 import {getObjectValue, setObjectValue} from "../utils/objects/paths.js";
+import areDeepEqual from "../utils/objects/deep-equal.js";
 
 function getPropFromState(path, state) {
    const keys = path.split('.');
@@ -15,10 +16,21 @@ function getPropsFromState(keys, state) {
    }, {});
 }
 
-export default function valueFunction(key, deps, fn) {
+const MAX_ATTEMPTS = 100;
+
+export default function valueFunction(key, deps, fn, exclusions = [], list = {}) {
    function run(state) {
       const props = getPropsFromState(deps, state);
-      return fn(props);
+      let count = 0;
+      let result;
+
+      do {
+         result = fn(props);
+         count++;
+      } while (count < MAX_ATTEMPTS && exclusions.some((exclusion) => areDeepEqual(exclusion, result)))
+
+      if (count === MAX_ATTEMPTS) throw new Error("The value was too hard to generate");
+      return result;
    }
 
    return { key, deps, run };

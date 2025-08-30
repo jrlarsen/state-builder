@@ -81,3 +81,52 @@ test("Can depend on a multiple values", () => {
 
    assert.equal(expected, result);
 });
+
+test("Will exclude a given value", () => {
+   const runner = functionRunner();
+   const fn1 = valueFunction(
+      "a",
+      [],
+      () => Math.floor(Math.random() * 2) + 4, // 4 or 5
+      [4]
+   );
+   runner.add(fn1);
+   const state = runner.run();
+   const result = state.a.value;
+   const expected = 5;
+
+   assert.equal(expected, result);
+})
+
+test("Will exclude a given object", () => {
+   const runner = functionRunner();
+   const possibles = [{ a: 5, b: "Hi" }, { a: 4, b: "Hi" }];
+   const fn1 = valueFunction(
+      "a",
+      [],
+      () => possibles[Math.floor(Math.random() * 2)],
+      [{ a: 5, b: "Hi" }]
+   );
+   runner.add(fn1);
+   const state = runner.run();
+   const result = state.a.value;
+   const expected = { a: 4, b: "Hi" };
+
+   assert.deepEqual(expected, result);
+});
+
+test("Will exclude an array of given values", () => {
+   const runner = functionRunner();
+   const fn1 = valueFunction(
+      "a",
+      [],
+      () => Math.floor(Math.random() * 4) + 4, // 4, 5, 6, 7
+      [4, 6, 7]
+   );
+   runner.add(fn1);
+   const state = runner.run();
+   const result = state.a.value;
+   const expected = 5;
+
+   assert.equal(expected, result);
+})
