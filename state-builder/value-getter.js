@@ -6,8 +6,8 @@ function getPropFromState(path, state) {
    return keys.length ? getObjectValue(state[key], keys.join('.')) : state[key];
 }
 
-function getPropsFromState(keys, state) {
-   return keys.reduce((soFar, key) => setObjectValue(soFar, key, getPropFromState(key, state).value), {});
+export function getPropsFromState(keys, state) {
+   return keys.reduce((soFar, key) => setObjectValue(soFar, key, getPropFromState(key, state)?.value), {});
 }
 
 const MAX_ATTEMPTS = 100;

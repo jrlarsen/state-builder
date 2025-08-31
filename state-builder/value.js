@@ -1,9 +1,9 @@
-function getValue(key, status, value) {
-   return { key, status, value };
+function getValue(key, status, value, hasChanged = false) {
+   return { key, status, value, hasChanged };
 }
 
-export function makeValue(key, value) {
-   return getValue(key, "ok", value);
+export function makeValue(key, value, hasChanged) {
+   return getValue(key, "ok", value, hasChanged);
 }
 
 export function makeError(key, value) {

@@ -8,7 +8,7 @@ test("Result is of correct form", () => {
    const fn = valueGetter("a", [], () => 5);
    builder.add(fn);
    const result = builder.build();
-   const expected = { a: { key: "a", status: "ok", value: 5 } };
+   const expected = { a: { hasChanged: true, key: "a", status: "ok", value: 5 } };
 
    assert.deepEqual(expected, result);
 });
@@ -146,7 +146,7 @@ test("Will create error value for a missing dependency", () => {
    assert.equal(expected, result);
 });
 
-test("Will create error value for an error dependency", () => {
+test("Will create an error value for an error dependency", () => {
    const builder = stateBuilder();
    const fn1 = valueGetter(
       "a",
@@ -276,4 +276,41 @@ test("Can use index when creating lists", () => {
    const expected =  [0, 1, 2, 3];
 
    assert.deepEqual(expected, result);
+});
+
+test("Patching a value updates it", () => {
+   const builder = stateBuilder();
+   const fn = valueGetter("a", [], () => 5);
+   builder.add(fn);
+   builder.build();
+   const result = builder.patch({ a : 10 });
+   const expected = { a: { hasChanged: true, key: "a", status: "ok", value: 10 } };
+
+   assert.deepEqual(expected, result);
+});
+
+test("Patching a value updates values that depend on it", () => {
+   const builder = stateBuilder();
+   const fn1 = valueGetter("a", [], () => 5);
+   const fn2 = valueGetter("b", ["a"], ({ a }) => a + 1);
+   builder.add(fn1);
+   builder.add(fn2);
+   builder.build();
+   const result = builder.patch({ a : 10 }).b;
+
+   assert.equal(result.hasChanged, true);
+   assert.equal(result.value, 11);
+});
+
+test("Patching a value doesn't update values that don't depend on it", () => {
+   const builder = stateBuilder();
+   const fn1 = valueGetter("a", [], () => 5);
+   const fn2 = valueGetter("b", [], () => 10);
+   builder.add(fn1);
+   builder.add(fn2);
+   builder.build();
+   const result = builder.patch({ a : 10 }).b;
+
+   assert.equal(result.hasChanged, false);
+   assert.equal(result.value, 10);
 });
