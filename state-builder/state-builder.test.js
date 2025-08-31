@@ -209,3 +209,71 @@ test("Will create error value for an impossible exclusion", () => {
 
    assert.equal(expected, result);
 });
+
+test("Will return a list of a given length", () => {
+   const builder = stateBuilder();
+   const fn1 = valueGetter(
+      "a",
+      [],
+      () => 5,
+      [],
+      { length: 3 }
+   );
+   builder.add(fn1);
+   const state = builder.build();
+   const result = state.a.value;
+   const expected = [5, 5, 5];
+
+   assert.deepEqual(expected, result);
+});
+
+test("Will return a list of unique items of a given length", () => {
+   const builder = stateBuilder();
+   const fn1 = valueGetter(
+      "a",
+      [],
+      () => Math.floor(Math.random() * 4) + 1,
+      [],
+      { length: 4, unique: true }
+   );
+   builder.add(fn1);
+   const state = builder.build();
+   const result = state.a.value.sort();
+   const expected = [1, 2, 3, 4];
+
+   assert.deepEqual(expected, result);
+});
+
+test("Will return an error for a list with too many exclusions", () => {
+   const builder = stateBuilder();
+   const fn1 = valueGetter(
+      "a",
+      [],
+      () => Math.floor(Math.random() * 4) + 1,
+      [1],
+      { length: 4, unique: true }
+   );
+   builder.add(fn1);
+   const state = builder.build();
+   const result = state.a.value;
+   const expected =  'There was a problem calculating this value, a: The value was too hard to generate.';
+
+   assert.equal(expected, result);
+});
+
+test("Can use index when creating lists", () => {
+   const builder = stateBuilder();
+   const fn1 = valueGetter(
+      "a",
+      ["_i"],
+      ({ _i }) => _i,
+      [],
+      { length: 4 }
+   );
+   builder.add(fn1);
+   const state = builder.build();
+   const result = state.a.value;
+   const expected =  [0, 1, 2, 3];
+
+   assert.deepEqual(expected, result);
+});
